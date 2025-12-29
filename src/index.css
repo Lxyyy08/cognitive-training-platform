@@ -1,0 +1,59 @@
+/* 1. 引入字体 */
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 2. 全局变量定义 */
+:root {
+  --font-vt323: 'VT323', monospace;
+}
+
+/* 3. 强制所有元素使用 VT323 */
+/* 使用 !important 确保覆盖浏览器默认样式和部分组件库样式 */
+*, *::before, *::after, 
+html, body, 
+h1, h2, h3, h4, h5, h6, 
+p, span, div, a, 
+button, input, textarea, select, label {
+  font-family: 'VT323', monospace !important;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: #000000;
+  
+  /* 4. 像素字体优化 */
+  /* VT323 比较显小，建议基准字号设为 18px 或 20px */
+  font-size: 18px; 
+  /* 像素字体不需要抗锯齿平滑，关掉后边缘更锐利 */
+  -webkit-font-smoothing: none; 
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Y2K 字体工具类 (虽然上面已经强制覆盖，但保留这个类用于特殊调整) */
+.font-arcade {
+  font-family: 'VT323', monospace;
+  letter-spacing: 0.05em; /* 稍微加宽一点字间距，复古感更强 */
+}
+
+/* 针对输入框和按钮的额外修正，防止字号过小 */
+input, button, textarea, select {
+  font-size: inherit;
+  letter-spacing: 0.05em;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #ffffff;
+  border-left: 2px solid #000;
+}
+::-webkit-scrollbar-thumb {
+  background: #000;
+  border: 2px solid #fff;
+}
