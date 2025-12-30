@@ -8,9 +8,9 @@ import { fetchAndDownloadRealData } from '../../utils/realDataFetcher';
 export const SettingsPage: React.FC = () => {
     const { t, i18n } = useTranslation();
     
-    // 获取所有需要的状态和方法
+    
     const { 
-        setLanguage, // 如果 Context 还需要同步状态，保留此调用
+        setLanguage, 
         volume, setVolume, 
         bgmVolume, setBgmVolume, 
         speak, stopSpeech 
@@ -18,23 +18,23 @@ export const SettingsPage: React.FC = () => {
 
     const handleLanguageChange = (lang: string) => {
         i18n.changeLanguage(lang);
-        setLanguage(lang); // 同步 Context 状态（如果有的话）
+        setLanguage(lang); 
     };
 
     const handleDownloadSimulation = () => {
-        // A. 生成 N=120 的仿真数据字符串
+        
         const csvContent = generateThesisData(120);
         
-        // B. 创建虚拟下载链接
+        
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
         link.setAttribute('href', url);
-        link.setAttribute('download', 'thesis_data_final_n120.csv'); // 文件名
+        link.setAttribute('download', 'thesis_data_final_n120.csv'); 
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
         
-        // C. 触发下载并清理
+        
         link.click();
         document.body.removeChild(link);
     };
@@ -44,7 +44,7 @@ export const SettingsPage: React.FC = () => {
             <CatBox variant="sitting" title={`${t('settings.title') || '设置'} / SYSTEM CONFIG`}>
                 <div className="space-y-12 p-6">
                     
-                    {/* --- 1. 语言设置 --- */}
+                    {/* --- 1. language setting --- */}
                     <div className="space-y-6">
                         <h3 className="text-xl font-black flex items-center border-b-4 border-black pb-2">
                             <Globe className="w-8 h-8 mr-3 text-black" /> 
@@ -67,14 +67,14 @@ export const SettingsPage: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* --- 2. 音频设置 (整合了 语音 和 BGM) --- */}
+                    {/* --- 2. audio setting --- */}
                     <div className="space-y-6">
                         <h3 className="text-xl font-black flex items-center border-b-4 border-black pb-2">
                             <Volume2 className="w-8 h-8 mr-3"/> 
                             音频设置 (AUDIO)
                         </h3>
 
-                        {/* 语音音量 */}
+                        {/* audio volumn */}
                         <div className="bg-gray-50 p-6 rounded-xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
                             <div className="flex items-center mb-4 font-mono font-bold text-lg">
                                 {volume === 0 ? <VolumeX className="w-6 h-6 mr-2"/> : <Mic className="w-6 h-6 mr-2"/>}
@@ -88,7 +88,7 @@ export const SettingsPage: React.FC = () => {
                             />
                         </div>
 
-                        {/* BGM 音量 */}
+                        {/* BGM volumn */}
                         <div className="bg-gray-50 p-6 rounded-xl border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
                             <div className="flex items-center mb-4 font-mono font-bold text-lg">
                                 <Music className="w-6 h-6 mr-2"/>
@@ -103,7 +103,7 @@ export const SettingsPage: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* --- 3. 诊断测试 --- */}
+                    {/* --- 3. test --- */}
                     <div className="space-y-6">
                         <h3 className="text-xl font-black flex items-center border-b-4 border-black pb-2">
                             <Monitor className="w-8 h-8 mr-3"/> 
@@ -140,7 +140,7 @@ export const SettingsPage: React.FC = () => {
                             </div>
 
                                 <PawButton 
-                                  onClick={fetchAndDownloadRealData} // <--- 确保这里绑定正确
+                                  onClick={fetchAndDownloadRealData} 
                                  className="w-full bg-red-800 border-red-950 text-white hover:bg-red-900 shadow-[4px_4px_0px_0px_rgba(100,0,0,0.5)]"
                                     >
                                   <Database className="w-6 h-6 mr-2"/> 
