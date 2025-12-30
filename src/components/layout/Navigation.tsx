@@ -27,7 +27,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   const { isBgmPlaying, toggleBgm } = useSettings();
   const { t } = useTranslation();
 
-  // 【核心修改 1】针对 G4 组锁定社区功能
+
   const isCommunityLocked = user?.group === 'G4';
 
   const navItems: { id: string; label: string; icon: LucideIcon }[] = [
@@ -58,7 +58,7 @@ export const Navigation: React.FC<NavigationProps> = ({
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
             
-            // 【核心修改 2】判定锁定逻辑
+            
             let isLocked = false;
             let lockTip = "";
 
@@ -67,7 +67,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                 lockTip = t('nav.locked_tip');
             } else if (item.id === 'community' && isCommunityLocked) {
                 isLocked = true;
-                lockTip = "Protocol G4: Access Restricted"; // G4 专属提示
+                lockTip = "Protocol G4: Access Restricted"; 
             }
 
             return (
@@ -87,7 +87,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                 {isLocked ? <Lock className="w-4 h-4" /> : <item.icon className="w-5 h-5" />}
                 <span>{item.label}</span>
                 
-                {/* 悬停提示 (Tooltip) */}
+               
                 {isLocked && (
                     <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] bg-black text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
                         {lockTip}
@@ -98,7 +98,7 @@ export const Navigation: React.FC<NavigationProps> = ({
           })}
         </nav>
 
-        {/* 右侧功能区 */}
+    
         <div className="hidden md:flex items-center space-x-4 border-l-2 border-black pl-6 ml-2">
             <button 
                 onClick={toggleBgm}
@@ -132,13 +132,13 @@ export const Navigation: React.FC<NavigationProps> = ({
             )}
         </div>
 
-        {/* Mobile Menu Button */}
+        
         <button className="md:hidden text-black p-2 border-2 border-black rounded-md shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none bg-white" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
+   
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -157,7 +157,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                 </button>
 
               {navItems.map((item) => {
-                // 【核心修改 3】移动端锁定逻辑同步
+               
                 let isLocked = false;
                 if (item.id === 'reporting' && !isReportingUnlocked) isLocked = true;
                 if (item.id === 'community' && isCommunityLocked) isLocked = true;
