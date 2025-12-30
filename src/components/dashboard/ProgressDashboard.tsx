@@ -28,7 +28,7 @@ const StatCard = ({ title, value, subtext, icon: Icon }: any) => (
     </div>
 );
 
-// --- 复古风格折线图 ---
+
 const RetroLineChart = ({ data }: { data: number[] }) => {
     const { t } = useTranslation();
 
@@ -41,29 +41,29 @@ const RetroLineChart = ({ data }: { data: number[] }) => {
     const maxVal = Math.max(...data, 1);
     const points = data.map((val, i) => {
         const x = (i / (data.length - 1)) * 100;
-        const y = 100 - (val / maxVal) * 80; // 留出一点边距
+        const y = 100 - (val / maxVal) * 80; 
         return `${x},${y}`;
     }).join(' ');
 
     return (
         <div className="h-64 w-full relative p-4 border-2 border-black bg-white">
-            {/* 网格背景 */}
+            
             <div className="absolute inset-0 opacity-10" 
                  style={{backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '20px 20px'}}>
             </div>
             
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible relative z-10">
-                {/* 折线 */}
+               
                 <polyline
                     fill="none"
                     stroke="black"
-                    strokeWidth="3" // 粗线条
+                    strokeWidth="3" 
                     points={points}
                     vectorEffect="non-scaling-stroke"
                     strokeLinejoin="round"
                     strokeLinecap="square"
                 />
-                {/* 数据点：方块 */}
+                
                 {data.map((val, i) => {
                      const x = (i / (data.length - 1)) * 100;
                      const y = 100 - (val / maxVal) * 80;
@@ -83,7 +83,7 @@ interface ProgressDashboardProps {
 export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ user }) => {
     const { t } = useTranslation();
     
-    // 【配置】最高等级限制
+    
     const MAX_LEVEL = 3;
 
     const [stats, setStats] = useState({
@@ -152,14 +152,14 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ user }) =>
         fetchData();
     }, [user.uid, user.group, user.trainingLevels]);
 
-    // 【新增】辅助函数：获取组别特定的技能名称
+    
     const getSkillName = () => {
         if (user.group === 'G4') return "Working Memory (N-Back)";
         if (user.group === 'G1') return "Visualization Stability";
         return "Attention Filter & Gaze Control"; // G2 & G3
     };
 
-    // 【新增】判断是否满级
+   
     const isMaxLevel = stats.currentLevel >= MAX_LEVEL;
 
     if (loading) {
@@ -178,11 +178,11 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ user }) =>
                 </span>
             </div>
 
-            {/* 核心指标 */}
+          
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <StatCard 
                     title={t('dashboard.currentLevel')} 
-                    // 如果满级，显示 MAX
+                    
                     value={isMaxLevel ? "MAX" : `LV.${stats.currentLevel}`} 
                     subtext={user.group === 'G4' ? t('dashboard.memoryCapacity') : t('dashboard.attentionDepth')}
                     icon={Brain}
@@ -201,9 +201,9 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ user }) =>
                 />
             </div>
 
-            {/* 图表区域 */}
+            
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* 左侧：曲线图 */}
+                
                 <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
                     <div className="flex justify-between items-center mb-6 border-b-2 border-black pb-2">
                         <h3 className="text-2xl font-bold text-black flex items-center uppercase">
@@ -220,7 +220,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ user }) =>
                     </p>
                 </div>
 
-                {/* 右侧：目标 (Target Section) */}
+               
                 <div className="bg-black text-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(100,100,100,1)] flex flex-col justify-between">
                     <div>
                         <h3 className="text-2xl font-bold text-white flex items-center mb-6 border-b-2 border-white pb-2 uppercase">
@@ -228,15 +228,15 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ user }) =>
                             {t('dashboard.nextObjectives')}
                         </h3>
                         <div className="space-y-6">
-                            {/* 目标 1: 技能升级目标 */}
+                           
                             <div className={`flex items-center justify-between p-4 border-2 ${isMaxLevel ? 'border-yellow-400 bg-gray-900' : 'border-white bg-gray-900'}`}>
                                 <div>
-                                    {/* 显示具体的技能名称 */}
+                                    
                                     <span className="block text-xs text-gray-400 mb-1 uppercase tracking-widest">
                                         {getSkillName()}
                                     </span>
                                     
-                                    {/* 等级显示逻辑 */}
+                                    
                                     <span className={`text-xl ${isMaxLevel ? 'text-yellow-400 font-black' : 'text-white'}`}>
                                         {isMaxLevel 
                                             ? "MAX LEVEL REACHED" 
@@ -245,7 +245,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ user }) =>
                                     </span>
                                 </div>
                                 
-                                {/* 只有未满级才显示准确率要求，满级显示奖杯 */}
+                                
                                 {!isMaxLevel ? (
                                     <span className="text-sm bg-white text-black px-2 py-1">
                                         {t('dashboard.reqAcc')}
@@ -255,7 +255,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ user }) =>
                                 )}
                             </div>
 
-                            {/* 目标 2: 目击报告目标 */}
+                            
                             <div className="flex items-center justify-between p-4 border-2 border-white bg-gray-900">
                                 <div>
                                     <span className="block text-xs text-gray-400 mb-1 uppercase tracking-widest">
