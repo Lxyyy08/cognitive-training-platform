@@ -6,16 +6,14 @@ import { db } from '../../firebase';
 import type { UserData } from '../../types';
 import { useTranslation } from 'react-i18next';
 
-// ==========================================
-// 1. 类型与素材配置
-// ==========================================
+
 export const CAT_BODY_URL = "/CAT.png"; 
 
 export interface AcademicAccessoryItem {
   id: number;
   img: string;
-  price: number; // 解锁天数
-  saliency?: number; // 目标增强分 (SNR Contribution)
+  price: number; 
+  saliency?: number; 
   type: 'NECK' | 'HEAD' | 'BODY' | 'FACE' | 'NOISE' | 'DISTRACTOR';
   pos: {
     top?: string;
@@ -28,16 +26,16 @@ export interface AcademicAccessoryItem {
   };
 }
 
-// 目标增强因子 (CAT_ITEMS) - 严格按照学术协议分组并修复层级
+
 export const CAT_ITEMS: AcademicAccessoryItem[] = [
   // --- Day 1: Color Anchors (NECK/FACE) ---
-  // 协议目标：色彩对比锚点 (Color Contrast)
+  //  (Color Contrast)
   { id: 4, img: 'C4.png', price: 1, saliency: 22, type: 'NECK', pos: { top: '26%', left: '31%', width: '44%', zIndex: 20 } },
   { id: 7, img: 'C7.png', price: 1, saliency: 15, type: 'NECK', pos: { top: '29%', left: '33%', width: '40%', zIndex: 20 } },
   { id: 21, img: 'C21.png', price: 1, saliency: 8, type: 'FACE', pos: { bottom: '69%', left: '37%', width: '20%', zIndex: 20 } },
   
   // --- Day 2: Shape/Contour (HEAD) ---
-  // 协议目标：打破形状恒常性 (Shape Constancy Breaking)
+  //  (Shape Constancy Breaking)
   { id: 1, img: 'C1.png', price: 2, saliency: 20, type: 'HEAD', pos: { top: '-8%', left: '37%', width: '25%', zIndex: 20 } },
   { id: 5, img: 'C5.png', price: 2, saliency: 25, type: 'HEAD', pos: { top: '-4%', left: '23%', width: '55%', zIndex: 20 } },
   { id: 20, img: '/C20.png', price: 2, saliency: 12, type: 'HEAD', pos: { top: '-5%', left: '17%', width: '65%', zIndex: 20 } },
@@ -48,7 +46,7 @@ export const CAT_ITEMS: AcademicAccessoryItem[] = [
   { id: 18, img: 'C18.png', price: 2, saliency: 5, type: 'FACE', pos: { top: '27%', right: '41%', width: '22%', rotate:'-15deg', zIndex: 20 } },
   
   // --- Day 3: Spatial/Body (BODY) ---
-  // 协议目标：空间感知扩展 (Spatial Awareness)
+  // (Spatial Awareness)
   { id: 16, img: 'C16.png', price: 3, saliency: 28, type: 'BODY', pos: { bottom: '46%', left: '21%', width: '75%', zIndex: 5 } }, // Wings behind body
   { id: 11, img: 'C11.png', price: 3, saliency: 12, type: 'BODY', pos: { top: '28%', left: '31%', width: '71%', zIndex: 20 } },
   { id: 12, img: 'C12.png', price: 3, saliency: 15, type: 'BODY', pos: { bottom: '29%', right: '7%', width: '50%', zIndex: 20 } },
@@ -70,9 +68,7 @@ export const BACKGROUND_ITEMS: AcademicAccessoryItem[] = [
 const ALL_ITEMS = [...CAT_ITEMS, ...BACKGROUND_ITEMS];
 const cn = (...classes: any[]) => classes.filter(Boolean).join(' ');
 
-// ==========================================
-// 2. 游戏主组件
-// ==========================================
+
 interface CatDressUpGameProps {
     user: UserData;
     progress: { day: number; totalSessions: number; completionRate: number };
@@ -92,7 +88,7 @@ export const CatDressUpGame: React.FC<CatDressUpGameProps> = ({ user, progress }
     const [newItemsModal, setNewItemsModal] = useState<AcademicAccessoryItem[] | null>(null);
     const [briefingModal, setBriefingModal] = useState<number | null>(null);
 
-    // 0. 实时学术指标计算
+    
     const stats = useMemo(() => {
         let signalScore = 15;
         let noiseLevel = 0;
@@ -114,11 +110,11 @@ export const CatDressUpGame: React.FC<CatDressUpGameProps> = ({ user, progress }
         return { fidelity, noiseLevel, status, color };
     }, [equippedIds, t]);
 
-    // 1. 每日简报检查 (Logic Updated for Day 1-3)
+    
     useEffect(() => {
         const checkBriefing = () => {
             const currentDay = progress.day;
-            // 协议限制：只在 Day 1, 2, 3 显示对应阶段的简报
+            
             if (currentDay < 1 || currentDay > 3) return;
 
             const storageKey = `briefing_seen_${user.uid}_day${currentDay}`;
@@ -137,7 +133,7 @@ export const CatDressUpGame: React.FC<CatDressUpGameProps> = ({ user, progress }
         setBriefingModal(null);
     };
 
-    // 2. 奖励判定逻辑
+   
     useEffect(() => {
         const checkRewards = async () => {
             if (!user.uid) return;
@@ -194,7 +190,7 @@ export const CatDressUpGame: React.FC<CatDressUpGameProps> = ({ user, progress }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [progress.totalSessions, progress.day]);
 
-    // 交互函数
+    
     const toggleEquip = (id: number) => {
         const item = ALL_ITEMS.find(i => i.id === id);
         if (!item) return;
@@ -275,7 +271,7 @@ export const CatDressUpGame: React.FC<CatDressUpGameProps> = ({ user, progress }
     return (
         <div className="max-w-6xl mx-auto mb-8 relative font-sans text-gray-900">
             
-            {/* --- 顶部学术协议 Banner --- */}
+        
             <div className="bg-white border-2 border-black p-5 mb-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                 <div className="flex items-start gap-4">
                     <div className="bg-black text-white p-2 rounded-sm mt-1">
@@ -312,10 +308,10 @@ export const CatDressUpGame: React.FC<CatDressUpGameProps> = ({ user, progress }
                 </div>
             </div>
 
-            {/* 主界面容器 */}
+           
             <div className="bg-[#f0f0f0] border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 relative overflow-hidden">
                 
-                {/* 标题栏 */}
+               
                 <div className="flex flex-wrap justify-between items-end mb-6 border-b-2 border-black pb-4 gap-4">
                     <div>
                         <h3 className="text-2xl font-black font-arcade uppercase">{t('game.title')}</h3>
@@ -343,7 +339,7 @@ export const CatDressUpGame: React.FC<CatDressUpGameProps> = ({ user, progress }
 
                 <div className="flex flex-col lg:flex-row gap-8">
                     
-                    {/* 左侧：可视化区域 */}
+                   
                     <div className="flex-1 flex flex-col">
                         <div className="mb-2 grid grid-cols-2 gap-2 text-xs font-mono">
                             <div className="bg-black text-white p-2 border border-black flex justify-between items-center">
@@ -392,7 +388,7 @@ export const CatDressUpGame: React.FC<CatDressUpGameProps> = ({ user, progress }
                         </div>
                     </div>
 
-                    {/* 右侧：选择区域 */}
+                  
                     <div className="flex-1 flex flex-col h-[600px]">
                         <div className="mb-2 text-xs font-mono text-gray-500 uppercase tracking-wider flex justify-between items-center">
                             <span>{t('cat_game.search_params')}</span>
@@ -421,7 +417,7 @@ export const CatDressUpGame: React.FC<CatDressUpGameProps> = ({ user, progress }
                     </div>
                 </div>
 
-                {/* --- 每日任务简报弹窗 (Supports i18n & Day 1,2,3) --- */}
+               
                 <AnimatePresence>
                     {briefingModal !== null && (
                         <div className="absolute inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-md p-6">
@@ -463,7 +459,7 @@ export const CatDressUpGame: React.FC<CatDressUpGameProps> = ({ user, progress }
                     )}
                 </AnimatePresence>
 
-                {/* --- 新物品获得弹窗 (黑白版) --- */}
+               
                 <AnimatePresence>
                     {newItemsModal && (
                         <div className="absolute inset-0 z-[150] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
@@ -506,7 +502,7 @@ export const CatDressUpGame: React.FC<CatDressUpGameProps> = ({ user, progress }
     );
 };
 
-// 辅助渲染函数
+
 const renderItemButton = (
     item: AcademicAccessoryItem, 
     ownedIds: number[], 
@@ -543,7 +539,7 @@ const renderItemButton = (
                     <img src={item.img} alt="item" className="w-full h-full object-contain p-1" />
                     {isEquipped && <div className="absolute top-0.5 right-0.5 w-2 h-2 bg-green-500 rounded-full border border-white" />}
                     
-                    {/* Tooltip Fix: 黑白风格 */}
+                    
                     <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-32 bg-black text-white text-[9px] p-2 rounded opacity-0 group-hover:opacity-100 pointer-events-none z-50 transition-opacity shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] border border-gray-600">
                         <div className="font-bold mb-0.5 text-white border-b border-gray-700 pb-1">
                              {/* @ts-ignore */}
