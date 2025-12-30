@@ -35,25 +35,25 @@ export const NBackTask: React.FC<NBackTaskProps> = ({ onSessionComplete, level, 
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // ----------------------------------------------------
-    // 1. 生成序列 (修复版：重新计算真实匹配数)
+    // 1. serial generatation
     // ----------------------------------------------------
     const generateSequence = () => {
         const seq: string[] = [];
         
-        // 步骤 A: 生成序列
+        
         for (let i = 0; i < SEQUENCE_LENGTH; i++) {
             if (i >= level && Math.random() < 0.3) { 
-                // 30% 概率强制匹配
+                
                 seq.push(seq[i - level]); 
             } else { 
-                // 70% 概率随机生成 (这里可能会意外产生匹配，这就是BUG的源头)
+                
                 let char = STIMULI[Math.floor(Math.random() * STIMULI.length)]; 
                 seq.push(char); 
             }
         }
         setSequence(seq); 
 
-        // 步骤 B: 【核心修复】生成完后，重新扫描一遍，统计真实的匹配数量
+        
         let actualMatches = 0;
         for (let i = level; i < SEQUENCE_LENGTH; i++) {
             if (seq[i] === seq[i - level]) {
@@ -76,7 +76,7 @@ export const NBackTask: React.FC<NBackTaskProps> = ({ onSessionComplete, level, 
     };
     
     // ----------------------------------------------------
-    // 2. 交互逻辑
+    // 2. interact logic
     // ----------------------------------------------------
     const isMatch = (index: number): boolean => { 
         if (index < level) return false; 
@@ -97,7 +97,7 @@ export const NBackTask: React.FC<NBackTaskProps> = ({ onSessionComplete, level, 
     useEffect(() => {
         if (status === 'running' && currentIndex < SEQUENCE_LENGTH) {
             timerRef.current = setTimeout(() => {
-                // 如果是匹配项但用户没点，算 Miss
+                
                 if (isMatch(currentIndex) && !feedback) {
                     metrics.current.misses++;
                 }
@@ -120,20 +120,20 @@ export const NBackTask: React.FC<NBackTaskProps> = ({ onSessionComplete, level, 
     }, [pauseBgm, stopSpeech]);
     
     // ----------------------------------------------------
-    // 3. 结算与升级核心逻辑
+    // 3.up core logic
     // ----------------------------------------------------
     const finishSession = async () => {
         setIsSaving(true);
         
-        // 计算准确率
+       
         const possible = metrics.current.possibleMatches;
         const hits = metrics.current.hits;
-        // 修复：如果全对了(hits == possible)，就是 100%，不会超过了
+        
         const accuracy = possible > 0 ? Math.min(1, hits / possible) : 0;
         
         console.log(`[G4 Results] Accuracy: ${accuracy.toFixed(2)}, Hits: ${hits}/${possible}`);
 
-        // 升级判定
+        
         if (accuracy >= 0.8 && level < 3) {
             console.log("--> Requirements met! Attempting Level Up...");
             const newLevel = Number(level) + 1; 
@@ -173,7 +173,7 @@ export const NBackTask: React.FC<NBackTaskProps> = ({ onSessionComplete, level, 
     };
 
     // ----------------------------------------------------
-    // 4. 渲染 UI
+    // 4. render UI
     // ----------------------------------------------------
     if (status === 'intro') {
         return (
@@ -215,7 +215,7 @@ export const NBackTask: React.FC<NBackTaskProps> = ({ onSessionComplete, level, 
         const accPercentage = metrics.current.possibleMatches > 0 
             ? Math.round((metrics.current.hits / metrics.current.possibleMatches) * 100) 
             : 0;
-        // 显示修正：哪怕计算出来超过100（应该不会了），也只显示100
+        
         const displayPercentage = Math.min(100, accPercentage);
 
         return (
