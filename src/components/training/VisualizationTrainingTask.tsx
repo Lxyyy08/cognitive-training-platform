@@ -37,15 +37,15 @@ export const VisualizationTrainingTask: React.FC<VisualizationTrainingTaskProps>
     const [currentBlock, setCurrentBlock] = useState(1);
     const [timerValue, setTimerValue] = useState(999); 
     
-    // 图片获取逻辑
+   
     const currentImageUrl = targetImageUrls.length > 0 
         ? targetImageUrls[(currentBlock - 1) % targetImageUrls.length] 
         : ""; 
 
     // --- Refs ---
-    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);         // 倒计时用
-    const wakeUpTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);   // 唤醒提示用
-    const speechTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null); // 【新增】语音延迟用
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);         
+    const wakeUpTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);  
+    const speechTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null); 
     const audioLockRef = useRef<{ status: string; block: number }>({ status: '', block: 0 });
 
     const TOTAL_BLOCKS = customSettings?.totalBlocks ?? 3;
@@ -55,7 +55,6 @@ export const VisualizationTrainingTask: React.FC<VisualizationTrainingTaskProps>
 
     // --- Cleanup Helpers ---
     
-    // 清理所有计时器（倒计时、唤醒、语音延迟）
     const cleanupTimers = useCallback(() => {
         if (timerRef.current) {
             clearInterval(timerRef.current);
@@ -65,35 +64,35 @@ export const VisualizationTrainingTask: React.FC<VisualizationTrainingTaskProps>
             clearTimeout(wakeUpTimerRef.current);
             wakeUpTimerRef.current = null;
         }
-        // 【核心修复】切换状态时，必须把还没播出来的语音计划取消掉
+        
         if (speechTimeoutRef.current) {
             clearTimeout(speechTimeoutRef.current);
             speechTimeoutRef.current = null;
         }
     }, []);
 
-    // 【核心修复】安全的播放函数：播放前先掐断之前的
+    
     const safeSpeak = useCallback((text: string, delay: number = 0) => {
-        // 1. 清除任何正在排队的语音
+        
         if (speechTimeoutRef.current) clearTimeout(speechTimeoutRef.current);
         
-        // 2. 停止当前正在说的
+       
         stopSpeech();
 
-        // 3. 设定新的播放计划
+       
         if (delay === 0) {
             speak(text);
         } else {
             speechTimeoutRef.current = setTimeout(() => {
                 speak(text);
-                speechTimeoutRef.current = null; // 执行完置空
+                speechTimeoutRef.current = null; 
             }, delay);
         }
     }, [speak, stopSpeech]);
 
     // --- Effects ---
 
-    // 1. 组件卸载时清理
+ 
     useEffect(() => {
         return () => {
             cleanupTimers();
@@ -101,7 +100,7 @@ export const VisualizationTrainingTask: React.FC<VisualizationTrainingTaskProps>
         };
     }, [cleanupTimers, stopSpeech]);
 
-    // 2. 初始设置
+    
     useLayoutEffect(() => {
         pauseBgm(); 
         return () => {
@@ -109,29 +108,28 @@ export const VisualizationTrainingTask: React.FC<VisualizationTrainingTaskProps>
         };
     }, [pauseBgm, stopSpeech]);
 
-    // 3. 主逻辑控制器 (状态机)
+
     useEffect(() => {
-        // 检查是否需要更新（防止React严格模式或不必要的重渲染导致重复触发）
+       
         const isSameState = 
             status === audioLockRef.current.status && 
             ((status !== 'observe' && status !== 'rehearse') || currentBlock === audioLockRef.current.block);
 
         if (isSameState) return;
 
-        // --- 状态变更：重置环境 ---
+        
         cleanupTimers();
         audioLockRef.current = { status, block: currentBlock };
 
-        // --- 状态处理 ---
+       
         switch (status) {
             case 'intro':
-                // 注意：浏览器可能拦截初次自动播放
+                
                 safeSpeak(t('voice_guide.g1.intro'), 300);
                 break;
 
             case 'ready':
-                // 此时用户有过交互，播放成功率高
-                // 【注意】原代码这里用的也是 voice_guide.g1.intro，如果需要不同语音请修改 key
+               
                 safeSpeak(t('voice_guide.g1.intro'), 300); 
                 break;
 
@@ -139,11 +137,11 @@ export const VisualizationTrainingTask: React.FC<VisualizationTrainingTaskProps>
                 const obsText = currentBlock === 1 ? t('voice_guide.g1.observe_start') : t('voice_guide.g1.observe_mid');
                 safeSpeak(obsText, 200);
 
-                // 启动倒计时
+                
                 timerRef.current = setInterval(() => {
                     setTimerValue((prev) => {
                         if (prev <= 1) {
-                            // 倒计时结束，但在 useEffect 外部处理状态跳转，这里只负责清理
+                            
                             if(timerRef.current) clearInterval(timerRef.current);
                             return 0;
                         }
@@ -156,17 +154,16 @@ export const VisualizationTrainingTask: React.FC<VisualizationTrainingTaskProps>
                 const rehText = currentBlock === 1 ? t('voice_guide.g1.rehearse_start') : t('voice_guide.g1.rehearse_deep');
                 safeSpeak(rehText, 200);
 
-                // 设定唤醒提示
+             
                 const wakeUpTime = (REHEARSE_DURATION - 15) * 1000;
                 if (wakeUpTime > 0) {
                     wakeUpTimerRef.current = setTimeout(() => {
-                        // 不使用 safeSpeak，因为这里不需要打断之前的（之前的应该早说完了）
-                        // 直接调用 speak 即可，或者用 safeSpeak 也没问题
-                        speak(t('voice_guide.g1.end')); // 【注意】这里通常是“快醒醒”之类的提示，检查 key 是否正确
+                       
+                        speak(t('voice_guide.g1.end')); 
                     }, wakeUpTime);
                 }
 
-                // 启动倒计时
+           
                 timerRef.current = setInterval(() => {
                     setTimerValue((prev) => {
                         if (prev <= 1) {
@@ -184,9 +181,9 @@ export const VisualizationTrainingTask: React.FC<VisualizationTrainingTaskProps>
         }
 
     }, [status, currentBlock, t, cleanupTimers, safeSpeak, speak, REHEARSE_DURATION]); 
-    // 注意：TimerValue 不在依赖里，防止倒计时每秒触发重置逻辑
+  
 
-    // 4. 倒计时结束监听器
+    
     useEffect(() => {
         if (timerValue === 0) {
             if (status === 'observe') {
@@ -198,7 +195,7 @@ export const VisualizationTrainingTask: React.FC<VisualizationTrainingTaskProps>
                     setTimerValue(OBSERVE_DURATION);
                     setStatus('observe');
                 } else {
-                    stopSpeech(); // 立即停止可能还在播的唤醒音
+                    stopSpeech();
                     setStatus('results');
                 }
             }
@@ -233,7 +230,7 @@ export const VisualizationTrainingTask: React.FC<VisualizationTrainingTaskProps>
         setStatus('intro');
     };
 
-    // --- RENDER (保持 UI 不变) ---
+    // --- RENDER ---
     if (status === 'intro') {
         return (
             <CatBox variant="walking" title={t('g1.title_intro')} className="max-w-4xl mx-auto">
