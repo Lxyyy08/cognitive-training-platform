@@ -21,7 +21,7 @@ export interface CombinedSessionMetrics {
 interface MixedTrainingTaskProps {
     onOverallComplete: (metrics: CombinedSessionMetrics) => void;
     level: number; 
-    // 【修改点 1】改为接收图片数组，以支持 Viz 阶段的图片轮播
+    
     targetImageUrls: string[]; 
     distractorImageUrls: string[]; 
     user: UserData; 
@@ -42,7 +42,7 @@ const G3_ATT_SETTINGS ={
 export const MixedTrainingTask: React.FC<MixedTrainingTaskProps> = ({ 
     onOverallComplete, 
     level, 
-    targetImageUrls, // 【修改点 2】接收数组
+    targetImageUrls, 
     distractorImageUrls, 
     user 
 }) => {
@@ -126,7 +126,7 @@ export const MixedTrainingTask: React.FC<MixedTrainingTaskProps> = ({
         return (
             <VisualizationTrainingTask
                 onSessionComplete={handleVizComplete}
-                // 【修改点 3】传入完整的图片数组，支持 G1 的轮播功能
+                
                 targetImageUrls={targetImageUrls} 
                 user={user}
                 customSettings={G3_VIZ_SETTINGS}
@@ -139,7 +139,7 @@ export const MixedTrainingTask: React.FC<MixedTrainingTaskProps> = ({
             <AttentionTrainingTask
                 onSessionComplete={handleAttComplete}
                 level={level}
-                // 【修改点 4】G2 任务目前逻辑是单张目标，取数组第一张
+                
                 targetImageUrl={targetImageUrls[0] || ""} 
                 distractorImageUrls={distractorImageUrls}
                 user={user}
