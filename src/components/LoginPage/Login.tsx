@@ -90,7 +90,7 @@ const Login: React.FC = () =>{
     { id: 'G4', label: t('login.groups.g4_label'), description: t('login.groups.g4_desc') },
   ];
 
-  // 【修复 1】切换语言时，强制写入 localStorage
+  //  localStorage
   const toggleLanguage = () => {
     const newLang = i18n.language.startsWith('en') ? 'zh' : 'en';
     i18n.changeLanguage(newLang);
@@ -197,7 +197,7 @@ const Login: React.FC = () =>{
       
       console.log("Auth success, reloading...");
       
-      // 【修复 2】在刷新页面前，保存当前语言偏好，防止被浏览器默认语言覆盖
+      // save language reference 
       localStorage.setItem('i18nextLng', i18n.language);
 
       window.location.reload(); 
