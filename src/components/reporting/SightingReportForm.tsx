@@ -11,7 +11,7 @@ import type { UserData } from '../../types';
 import { useTranslation } from 'react-i18next';
 
 // ==========================================
-// 1. 工具与通用配置 (Utils)
+// 1.Utils
 // ==========================================
 const cn = (...classes: (string | boolean | null | undefined)[]) => classes.filter(Boolean).join(' ');
 
@@ -23,12 +23,10 @@ const STYLE = {
 };
 
 // ==========================================
-// 2. 艺术背景组件 (ArtBackground)
+// 2.Background
 // ==========================================
 const ArtBackground = ({ children }: { children: React.ReactNode }) => {
-    // ... ArtBackground 代码保持不变 (为了节省篇幅，这里省略，请保留你原有的 ArtBackground 代码) ...
-    // 如果需要我完整贴出 ArtBackground 请告诉我，但通常它不需要修改。
-    // 这里为了代码运行，我放一个简化版的占位，你实际使用时保留原来的即可。
+   
     return (
         <div className="relative w-full min-h-screen overflow-hidden bg-[#e5e5e5]">
             <div className="relative z-10 w-full h-full overflow-y-auto">
@@ -39,7 +37,7 @@ const ArtBackground = ({ children }: { children: React.ReactNode }) => {
 };
 
 // ==========================================
-// 3. 复古艺术组件 (RetroArtComponents)
+// 3. RetroArtComponents
 // ==========================================
 
 const RetroStyles = () => (
@@ -196,7 +194,7 @@ const InkButton = ({ className, children, variant = 'filled', loading = false, i
 };
 
 // ==========================================
-// 4. 业务逻辑组件 (SightingReportForm)
+// 4. SightingReportForm
 // ==========================================
 interface SightingReportFormProps {
     user: UserData;
@@ -244,42 +242,39 @@ export const SightingReportForm: React.FC<SightingReportFormProps> = ({ user, on
         setIsSubmitting(true);
         
         try {
-            // ======================================================
-            // 核心修改：统一数据格式以适配 CommunityPage
-            // ======================================================
+           
             const reportData = {
-                // 1. 基础身份信息 (社区显示用)
+                
                 userId: user.uid,
-                userName: user.name || "Anonymous", // 必须有，社区页面显示用
+                userName: user.name || "Anonymous", 
                 userGroup: user.group, 
                 
-                // 2. 核心内容 (映射到社区帖子的结构)
+              
                 content: hasSighted ? description : (t('report.default_not_sighted') || "No sighting reported today."), 
                 
-                // 【关键修正】字段名必须是 evidenceImgUrl，CommunityPage 才能识别并显示图片！
+                
                 evidenceImgUrl: imageBase64 || null, 
                 
-                // 3. 元数据 (Metadata)
-                type: 'SIGHTING_REPORT',
-                timestamp: serverTimestamp(), // 社区页面排序用
-                reportDate: serverTimestamp(), // 存档用
                 
-                // 4. 科学数据 (保留供后续分析)
+                type: 'SIGHTING_REPORT',
+                timestamp: serverTimestamp(), 
+                reportDate: serverTimestamp(), 
+                
+                
                 hasSighted: hasSighted,
                 sightingCount: hasSighted ? count : 0,
                 confidence: hasSighted ? confidence : null,
                 dayOfExperiment: "Day 4-5 (Test Phase)",
                 
-                // 5. 互动初始值 (防止社区页面报错)
+            
                 likes: 0,
                 comments: []
             };
 
-            // 【关键修改】存入 'community_posts' 集合，这样才能在社区的 Field Evidence 中刷出来
+            
             await addDoc(collection(db, 'community_posts'), reportData);
             
-            // 如果你也想保留一份纯净的目击数据，可以取消下面这行的注释
-            // await addDoc(collection(db, 'sightings'), reportData);
+            
             
             setIsSuccess(true);
             if (onReportSubmit) setTimeout(onReportSubmit, 2000);
