@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 const ALL_ITEMS = [...CAT_ITEMS, ...BACKGROUND_ITEMS];
 
-// ... (MiniCatPreview 组件保持不变，省略以节省空间) ...
+
 const MiniCatPreview = ({ equippedIds }: { equippedIds: number[] }) => {
     const { t } = useTranslation();
     return (
@@ -103,18 +103,13 @@ export const CommunityPage = ({ user }: { user: UserData }) => {
         try { await updateDoc(postRef, { comments: arrayUnion(tag) }); } catch (e) {}
     };
 
-    // =========================================================
-    // 🛠️ 核心修复：更新筛选逻辑
-    // =========================================================
+   
     const filteredPosts = posts.filter(post => {
         if (activeTab === 'TEMPLATE') {
-            // Template Tab: 
-            // 1. 必须没有图片 (如果有图片，肯定是证据)
-            // 2. 且必须包含 saliencyScore (这是换装游戏分享的特征)
-            // 这样就排除了 "纯文本的目击报告" (它们会被视为无效数据隐藏，或需另开Tab显示)
+           
             return !post.evidenceImgUrl && post.saliencyScore !== undefined;
         } else {
-            // Evidence Tab: 必须有图片 (符合"验证图片"的定义)
+            
             return !!post.evidenceImgUrl;
         }
     });
@@ -128,7 +123,7 @@ export const CommunityPage = ({ user }: { user: UserData }) => {
                 </div>
             )}
 
-            {/* --- 顶部学术横幅 --- */}
+            
             <div className="py-8 mb-8 border-b-4 border-black bg-white">
                 <div className="max-w-6xl mx-auto px-4 text-center">
                     <div className="flex items-center justify-center gap-3 mb-2">
@@ -151,7 +146,7 @@ export const CommunityPage = ({ user }: { user: UserData }) => {
 
             <div className="max-w-6xl mx-auto px-4">
                 
-                {/* --- Tab 切换器 --- */}
+                
                 <div className="flex border-4 border-black bg-white mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
                     <button 
                         onClick={() => setActiveTab('TEMPLATE')}
