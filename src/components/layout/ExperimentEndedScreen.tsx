@@ -2,9 +2,9 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Database, ShieldCheck, Terminal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import ArtBackground from '../../ArtBackground'; // 确保路径正确
+import ArtBackground from '../../ArtBackground'; 
 
-// --- 复用复古样式组件 (保持风格一致) ---
+
 const cn = (...classes: any[]) => classes.filter(Boolean).join(' ');
 
 const PaperTextureDefs = () => (
@@ -21,15 +21,15 @@ const RetroPaperBox = ({ children, title, className }: { children: React.ReactNo
     return (
         <div className={cn("relative group w-full max-w-2xl mx-auto px-4", className)}>
             <PaperTextureDefs />
-            {/* 胶带装饰 */}
+            
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-8 bg-[#f4f4f0]/90 shadow-sm z-20 rotate-1"
                  style={{ clipPath: 'polygon(2% 0%, 98% 0%, 100% 100%, 0% 100%)', opacity: 0.8 }} />
             
-            {/* 背景层叠 */}
+            
             <div className="absolute inset-0 bg-[#d6d3cb] transform rotate-2 rounded-sm shadow-md z-0" />
             <div className="absolute inset-0 bg-[#eae8e1] transform -rotate-1 rounded-sm shadow-sm z-0 translate-x-1 translate-y-1" />
 
-            {/* 主内容纸张 */}
+           
             <div className="relative bg-[#fdfbf7] z-10 shadow-xl pb-8 pt-12 px-6 md:px-12 flex flex-col border border-gray-200"
                  style={{ filter: 'url(#paper-noise-end)' }}
             >
@@ -46,7 +46,7 @@ const RetroPaperBox = ({ children, title, className }: { children: React.ReactNo
     );
 };
 
-// --- 主组件 ---
+
 interface ExperimentEndedScreenProps {
     userStats: {
         daysCompleted: number;
@@ -64,7 +64,7 @@ export const ExperimentEndedScreen: React.FC<ExperimentEndedScreenProps> = ({ us
                 <RetroPaperBox title={t('end_screen.title')} className="mt-10">
                     <div className="flex flex-col items-center text-center">
                         
-                        {/* 顶部图标动画 */}
+                     
                         <motion.div 
                             initial={{ scale: 0, rotate: -180 }}
                             animate={{ scale: 1, rotate: 0 }}
@@ -86,7 +86,7 @@ export const ExperimentEndedScreen: React.FC<ExperimentEndedScreenProps> = ({ us
                             {t('end_screen.message')}
                         </div>
 
-                        {/* 数据统计卡片 */}
+                      
                         <div className="grid grid-cols-3 gap-4 w-full mb-10">
                             {/* Days */}
                             <motion.div 
@@ -119,7 +119,7 @@ export const ExperimentEndedScreen: React.FC<ExperimentEndedScreenProps> = ({ us
                             </motion.div>
                         </div>
 
-                        {/* 底部按钮 */}
+                        
                         <button 
                             onClick={onGoToCommunity}
                             className="w-full bg-black text-white py-4 font-bold font-mono text-lg hover:bg-gray-800 transition-all flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] active:translate-y-1 active:shadow-none"
