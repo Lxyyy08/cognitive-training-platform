@@ -9,9 +9,7 @@ import { useTranslation } from 'react-i18next'
 
 const cn = (...classes: (string | boolean | null | undefined | number | bigint)[]) => classes.filter(Boolean).join(' ');
 
-// =========================================================================
-// 1. 复用 UI 组件 (与 PreTrainingQuestionnaire 保持风格一致)
-// =========================================================================
+
 
 const Button = React.forwardRef<HTMLButtonElement, any>(
     ({ className, variant = 'primary', children, disabled, loading, icon: Icon, ...props }, ref) => {
@@ -33,13 +31,13 @@ const Card = ({ className, ...props }: any) => (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={cn("border-4 border-black bg-white text-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-8 w-full max-w-3xl mx-auto", className)} {...props} />
 );
 
-// =========================================================================
-// 2. 数据结构配置
-// =========================================================================
+
+// 2. Data structure configure
+
 
 type Question = { id: string; icon: LucideIcon; scale: string; };
 
-// ID 必须与 zh.json/en.json 中的 "post_questions" key 对应
+//  "post_questions" key 
 const POST_TEST_QUESTIONS: Question[] = [
     { id: 'Q1', scale: 'Attention', icon: Eye },
     { id: 'Q2', scale: 'Attention', icon: Target },
@@ -48,7 +46,7 @@ const POST_TEST_QUESTIONS: Question[] = [
     { id: 'Q5', scale: 'Motivation', icon: Heart },
     { id: 'Q6', scale: 'Expectancy', icon: TrendingUp },
     { id: 'Q7', scale: 'Expectancy', icon: Search },
-    { id: 'Q8', scale: 'Current State', icon: Zap }, // 这一题的翻译已更改为反映"训练后"状态
+    { id: 'Q8', scale: 'Current State', icon: Zap }, 
 ];
 
 interface PostTrainingQuestionnaireProps {
@@ -70,29 +68,29 @@ export const PostTrainingQuestionnaire: React.FC<PostTrainingQuestionnaireProps>
         setAnswers(prev => ({ ...prev, [questionId]: score }));
     };
 
-    // 计算已回答数量
+    
     const answeredCount = Object.values(answers).filter(a => a !== null).length;
 
     const handleSubmit = async () => {
         setSubmitting(true);
         try {
-            // 1. 存入 postTest 集合 (对应数据分析中的 Post-Test 数据源)
+            
             await setDoc(doc(db, 'users', user.uid, 'postTest', 'result'), { 
                 answers, 
                 submittedAt: serverTimestamp(),
                 type: 'post-test',
-                group: user.group // 冗余存一份 group，方便在子集合导出数据时直接查看
+                group: user.group 
             });
             
             setIsSubmitted(true);
             setSubmitting(false);
             
-            // 2. 延迟跳转，给用户展示成功动画
+           
             setTimeout(async () => {
-                // 更新用户主文档状态
+                
                 await updateDoc(doc(db, 'users', user.uid), { 
-                    postTestCompleted: true, // 标记后测完成
-                    studyCompleted: true     // 标记整个研究流程结束
+                    postTestCompleted: true, 
+                    studyCompleted: true    
                 });
                 onComplete(); 
             }, 2500);
@@ -102,7 +100,7 @@ export const PostTrainingQuestionnaire: React.FC<PostTrainingQuestionnaireProps>
         }
     };
 
-    // 评分按钮组件
+   
     const ScoreOption = ({ score, selectedScore, onSelect }: any) => {
         const isSelected = selectedScore === score;
         return (
@@ -125,11 +123,11 @@ export const PostTrainingQuestionnaire: React.FC<PostTrainingQuestionnaireProps>
     return (
         <div className="min-h-screen flex items-center justify-center p-4 font-arcade bg-gray-100">
             <Card className="border-4 border-black">
-                {/* 顶部标题栏 */}
+                
                 <div className="mb-8 border-b-4 border-black pb-4">
                     <h1 className="text-3xl md:text-4xl font-black uppercase flex items-center gap-3">
                         <Trophy className="w-8 h-8 md:w-10 md:h-10 text-yellow-500 fill-black" />
-                        {/* 如果翻译文件还没加载，提供默认英文 */}
+                        
                         {t('questionnaire.post_title') || 'FINAL ASSESSMENT'}
                     </h1>
                     <p className="text-lg md:text-xl text-gray-600 mt-2 font-sans font-bold">
@@ -160,14 +158,14 @@ export const PostTrainingQuestionnaire: React.FC<PostTrainingQuestionnaireProps>
                     ) : (
                         <motion.div key="questions" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-8">
                             
-                            {/* 题目列表 */}
+                       
                             <div className="space-y-6">
                                 {POST_TEST_QUESTIONS.map((q, i) => (
                                     <div key={q.id} className="p-4 border-2 border-black bg-gray-50 shadow-sm hover:shadow-md transition-shadow">
                                         <div className="flex items-start mb-4">
                                             <span className="font-bold mr-4 text-2xl">0{i + 1}.</span>
                                             
-                                            {/* 【关键修改】这里读取的是 questionnaire.post_questions.{id} */}
+                                            
                                             <p className="text-xl font-arcade leading-tight font-medium">
                                                 {t(`questionnaire.post_questions.${q.id}`)}
                                             </p>
@@ -191,7 +189,7 @@ export const PostTrainingQuestionnaire: React.FC<PostTrainingQuestionnaireProps>
                                 ))}
                             </div>
 
-                            {/* 底部按钮 */}
+                            
                             <div className="flex flex-col gap-4 pt-6 border-t-4 border-black">
                                 <Button 
                                     onClick={handleSubmit} 
