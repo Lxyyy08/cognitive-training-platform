@@ -29,18 +29,16 @@ import { useTranslation } from 'react-i18next'
 
 const cn = (...classes: any[]) => classes.filter(Boolean).join(' ');
 
-// =============================================================================
-// ⏱️ 实验周期配置
-// =============================================================================
+
 const TRAINING_DAYS = 3; 
 const TOTAL_DAYS = 5;
 
-// --- 本地样式组件 ---
+
 const Card = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-0 overflow-hidden", className)} {...props} />
 );
 
-// --- 认知冷知识组件 (G4 专用) ---
+
 const CognitiveTrivia = () => {
     const { t } = useTranslation();
     const [factIndex, setFactIndex] = useState(0);
@@ -94,7 +92,7 @@ const CognitiveTrivia = () => {
     );
 };
 
-// GroupGuideCard 组件
+
 const GroupGuideCard = ({ group }: { group: string }) => {
     const { t } = useTranslation();
 
@@ -105,7 +103,7 @@ const GroupGuideCard = ({ group }: { group: string }) => {
         'G4': { title: t('main.guide.g4_title'), desc: t('main.guide.g4_desc'), icon: Sparkles }
     };
 
-    // @ts-ignore
+    
     const content = guides[group] || guides['G1'];
     const Icon = content.icon;
 
@@ -127,15 +125,13 @@ const GroupGuideCard = ({ group }: { group: string }) => {
     );
 };
 
-// =============================================================================
-// 核心修复点 1: 更新 Props 接口定义，添加 currentDay
-// =============================================================================
+
 interface MainLayoutProps {
   activeTab: string
   onTabChange: (tab: string) => void
   user: UserData
   onLogout: () => void
-  currentDay: number // <--- 新增这行
+  currentDay: number 
 }
 
 export const MainLayout: React.FC<MainLayoutProps> = ({
@@ -143,9 +139,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   onTabChange,
   user,
   onLogout,
-  currentDay // =============================================================================
-             // 核心修复点 2: 接收 currentDay 参数
-             // =============================================================================
+  currentDay 
 }) => {
   const {  } = useSettings();
   const { t } = useTranslation();
@@ -163,14 +157,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   const [loadingStimuli, setLoadingStimuli] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // 1. 计算进度与天数
+
   useEffect(() => {
     const calculateProgress = async () => {
       if (!user) return;
       
-      // =============================================================================
-      // 核心修复点 3: 直接使用 currentDay，不再重复计算，保持与 App.tsx 一致
-      // =============================================================================
+
       let dayCount = currentDay;
       if (dayCount < 1) dayCount = 1;
 
@@ -196,9 +188,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
       }
     };
     calculateProgress();
-  }, [user, refreshTrigger, currentDay]); // 添加 currentDay 到依赖数组
+  }, [user, refreshTrigger, currentDay]); 
 
-  // 2. 加载训练素材
+  
   useEffect(() => {
     const fetchStimuli = async () => {
       if(activeTab === 'training' && user.group !== 'G4') {
@@ -258,7 +250,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
 
   const isReportingUnlocked = dynamicProgress.day > TRAINING_DAYS;
 
-  // 4. 主内容渲染逻辑
   const renderMainContent = () => {
     switch (activeTab) {
       case 'overview':
