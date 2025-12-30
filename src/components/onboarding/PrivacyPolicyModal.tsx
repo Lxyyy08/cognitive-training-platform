@@ -4,12 +4,12 @@ import { Check, X, AlertTriangle, Eye, Target, Server, ShieldCheck, Loader2 } fr
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-// 样式工具函数
+
 const cn = (...classes: (string | boolean | null | undefined)[]) => {
     return classes.filter(Boolean).join(' ');
 };
 
-// Markdown 解析组件
+
 const RenderText = ({ text }: { text: string }) => {
     if (!text) return null;
     const parts = text.split(/(\*\*.*?\*\*)/g);
@@ -25,7 +25,7 @@ const RenderText = ({ text }: { text: string }) => {
     );
 };
 
-// 按钮组件
+
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary';
     icon?: LucideIcon;
@@ -35,9 +35,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant = 'primary', icon: Icon, children, style, ...props }, ref) => {
         const baseStyle = 'inline-flex items-center justify-center rounded-lg font-medium py-3 px-6 transition-all duration-200 disabled:opacity-50 font-arcade text-lg border-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.3)] active:translate-y-1 active:shadow-none';
         
-        // 样式变体
+        
         const variants = {
-            // 注意：虽然这里写了 tailwind 类，但下方我们会用 style 属性进行强制覆盖
+           
             primary: 'bg-white text-black border-black hover:bg-gray-200',
             secondary: 'bg-white text-red-600 border-red-600 hover:bg-red-50',
         };
@@ -46,7 +46,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             <button
                 ref={ref}
                 className={cn(baseStyle, variants[variant], className)}
-                style={style} // 允许传入内联样式
+                style={style} 
                 {...props}
             >
                 {Icon && <Icon className="w-5 h-5 mr-2" />}
@@ -57,17 +57,17 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = 'Button';
 
-// 主模态框组件
+
 interface PrivacyPolicyModalProps {
     onAgree: () => void;
     onDecline: () => void;
 }
 
 export const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({ onAgree, onDecline }) => {
-    // 引入 ready 状态：只有当翻译资源加载完毕，ready 才会变为 true
+   
     const { t, i18n, ready } = useTranslation();
 
-    // 如果翻译还没加载好，显示一个加载圈，避免显示英文原文
+    
     if (!ready) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -175,7 +175,7 @@ export const PrivacyPolicyModal: React.FC<PrivacyPolicyModalProps> = ({ onAgree,
                         variant="primary"
                         onClick={onAgree}
                         icon={Check}
-                        // 【强制修复】使用 style 属性强制覆盖颜色，解决优先级问题
+                        
                         style={{ backgroundColor: '#ffffff', color: '#000000' }}
                         className="border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100"
                     >
