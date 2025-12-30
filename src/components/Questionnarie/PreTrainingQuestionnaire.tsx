@@ -10,9 +10,7 @@ import { useTranslation } from 'react-i18next'
 
 const cn = (...classes: (string | boolean | null | undefined | number | bigint)[]) => classes.filter(Boolean).join(' ');
 
-// =========================================================================
-// 1. UI 组件 (保持复古风格)
-// =========================================================================
+
 
 const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
     ({ className, type, ...props }, ref) => (
@@ -58,14 +56,13 @@ const Card = ({ className, children }: { className?: string, children: React.Rea
     </div>
 );
 
-// 【修复 1】性别选项匹配 JSON 结构 (gender_male, gender_female, gender_other)
+// (gender_male, gender_female, gender_other)
 const GENDER_OPTIONS = [
     { val: 'Male', labelKey: 'gender_male' },
     { val: 'Female', labelKey: 'gender_female' },
     { val: 'Other', labelKey: 'gender_other' }, 
 ];
 
-// 【修复 2】题目 Key 改为大写 'Q' 开头，以匹配 JSON 中的 "questions": { "Q1": ... }
 const PRE_TEST_QUESTIONS = [
     { id: 1, type: 'scale', key: 'Q1', icon: Eye },
     { id: 2, type: 'scale', key: 'Q2', icon: Target },
@@ -109,7 +106,7 @@ export const PreTrainingQuestionnaire: React.FC<PreTrainingQuestionnaireProps> =
                 preTestAnswers: answers,
                 preTestTimestamp: serverTimestamp()
             });
-            // 提交成功，跳转到步骤 3 (欢迎/成功页面)
+            
             setStep(3); 
         } catch (error) {
             console.error("Error submitting pre-test:", error);
@@ -123,7 +120,7 @@ export const PreTrainingQuestionnaire: React.FC<PreTrainingQuestionnaireProps> =
         await signOut(auth);
     };
 
-    // 进度条计算
+    
     const progressWidth = step === 1 ? '30%' : (step === 2 ? '90%' : '100%');
 
     return (
@@ -151,14 +148,14 @@ export const PreTrainingQuestionnaire: React.FC<PreTrainingQuestionnaireProps> =
                             >
                                 <div className="text-center mb-10">
                                     <div className="inline-block bg-black text-white px-4 py-1 text-sm font-bold font-mono mb-4 border-2 border-white shadow-[2px_2px_0px_0px_rgba(0,0,0,0.2)]">
-                                        {/* 【修复 3】使用 protocol_prefix 替代缺失的 phase_title */}
+                                       
                                         {t('questionnaire.protocol_prefix')} 0: INITIALIZATION
                                     </div>
                                     <h1 className="text-3xl md:text-5xl font-black font-arcade uppercase mb-4 leading-tight">
-                                        {/* 【修复 4】使用 title 替代缺失的 title_demographics */}
+                                       
                                         {t('questionnaire.title')}
                                     </h1>
-                                    {/* 移除了缺失的 desc_demographics 字段，保持界面整洁 */}
+                                   
                                 </div>
 
                                 <div className="grid gap-6 max-w-lg mx-auto w-full flex-1">
@@ -188,7 +185,7 @@ export const PreTrainingQuestionnaire: React.FC<PreTrainingQuestionnaireProps> =
                                                         gender === opt.val ? "bg-black text-white border-black" : "bg-white text-gray-500 border-black hover:bg-gray-100"
                                                     )}
                                                 >
-                                                    {/* 【修复 5】使用 questionnaire.gender_xxx */}
+                                                   
                                                     {t(`questionnaire.${opt.labelKey}`)}
                                                 </button>
                                             ))}
@@ -244,7 +241,7 @@ export const PreTrainingQuestionnaire: React.FC<PreTrainingQuestionnaireProps> =
                                                     <q.icon className="w-4 h-4" />
                                                 </div>
                                                 <h3 className="font-bold font-sans text-sm leading-tight">
-                                                    {/* 【修复 6】确保引用 questionnaire.questions.Q1 */}
+                                                   
                                                     {t(`questionnaire.questions.${q.key}`)}
                                                 </h3>
                                             </div>
@@ -314,7 +311,7 @@ export const PreTrainingQuestionnaire: React.FC<PreTrainingQuestionnaireProps> =
                                     size="lg" 
                                     className="w-full md:w-auto text-xl py-4 px-10 animate-pulse"
                                 >
-                                    {/* 【修复 7】替换不存在的 btn_start_training 为 btn_next */}
+                                    
                                     {t('questionnaire.btn_next')} -&gt;
                                 </Button>
                             </motion.div>
