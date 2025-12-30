@@ -9,7 +9,7 @@ import { useSettings } from '../../contexts/SettingsContent'
 import { useTranslation } from 'react-i18next';
 
 // =========================================================
-// ⏱️ 训练配置
+// Training configuration
 // =========================================================
 const TOTAL_SETS = 3;           
 const DURATION_PER_SET = 90;    
@@ -136,44 +136,39 @@ export const AttentionTrainingTask: React.FC<AttentionTrainingTaskProps> = ({
     const animationFrameRef = useRef<number | null>(null);
     const lastTimestampRef = useRef<number>(0);
     
-    // 【关键修复】确保只在组件彻底卸载时才关闭摄像头
+    
     useEffect(() => {
-        // 这个 cleanup 函数只会在组件被销毁（如切到别的页面）时运行
+        
         return () => {
-            // 1. 停止动画帧
+            
             if(animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
             
-            // 2. 停止 WebGazer
+            
             stopTracking();
             shutdown();
 
-            // 3. 强制关闭摄像头硬件连接
+            
             const videoElement = document.getElementById('webgazerVideoFeed') as HTMLVideoElement;
             if (videoElement && videoElement.srcObject) {
                 const stream = videoElement.srcObject as MediaStream;
                 const tracks = stream.getTracks();
                 
                 tracks.forEach(track => {
-                    track.stop(); // 这行代码会让摄像头指示灯熄灭
+                    track.stop(); 
                 });
                 
                 videoElement.srcObject = null;
             }
 
-            // 隐藏红点
+            
             if (redDotRef.current) {
                 redDotRef.current.style.opacity = '0';
             }
         };
-        // 依赖数组为空 []，表示只在 mount/unmount 时执行
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        
     }, []);
 
-    // ------------------------------------------------
-    // 逻辑函数定义
-    // ------------------------------------------------
-
-    // 开始校准流程
+  
     const handleStartCalibrationProcess = useCallback(() => {
         startCalibration();
         setCalibIndex(0);
@@ -189,7 +184,7 @@ export const AttentionTrainingTask: React.FC<AttentionTrainingTaskProps> = ({
         gazeHistoryRef.current = [];
     }, [startCalibration, DURATION_PER_SET_ACTUAL]);
 
-    // 初始化 WebGazer
+    
     const handleInitialize = async () => {
         setStatus('initializing');
         const success = await initWebGazer();
@@ -202,7 +197,7 @@ export const AttentionTrainingTask: React.FC<AttentionTrainingTaskProps> = ({
         }
     };
 
-    // 摄像头自检倒计时
+    
     useEffect(() => {
         let checkTimer: ReturnType<typeof setInterval>;
         if (status === 'cameraCheck') {
@@ -212,7 +207,7 @@ export const AttentionTrainingTask: React.FC<AttentionTrainingTaskProps> = ({
                         clearInterval(checkTimer);
                         setTimeout(() => {
                             setVideoLayout('corner');
-                            // 【优化】检测完直接进入校准，不再回 intro，防止流程中断
+                            
                             handleStartCalibrationProcess();
                         }, 500);
                         return 0;
@@ -280,12 +275,12 @@ export const AttentionTrainingTask: React.FC<AttentionTrainingTaskProps> = ({
 
         newObjects.push(createObj(targetImageUrl, true));
 
-        // 随机干扰物逻辑
+        
         let safeDistractors = distractorImageUrls.length > 0 
             ? [...distractorImageUrls] 
             : ["https://placekitten.com/100/100"];
         
-        // 简单的洗牌算法
+        
         safeDistractors.sort(() => Math.random() - 0.5);
 
         for(let i=0; i<config.numDistractors; i++) {
@@ -306,7 +301,7 @@ export const AttentionTrainingTask: React.FC<AttentionTrainingTaskProps> = ({
     const finishSession = async () => {
         setStatus('results');
         
-        // 结束时也尝试关闭，双重保险
+        
         stopTracking();
         shutdown();
         const videoElement = document.getElementById('webgazerVideoFeed') as HTMLVideoElement;
@@ -360,7 +355,7 @@ export const AttentionTrainingTask: React.FC<AttentionTrainingTaskProps> = ({
         }
     }, [currentSet, stopTracking, t, TOTAL_SETS_ACTUAL, REST_DURATION_ACTUAL]); 
 
-    // 计时器逻辑
+    
     useEffect(() => {
         if (status === 'running') {
             const timer = setInterval(() => {
